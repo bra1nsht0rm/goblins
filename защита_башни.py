@@ -32,6 +32,16 @@ GREEN = (50, 205, 50)
 # Шрифт для текста
 font = pygame.font.SysFont(None, 55)
 
+
+
+#переменные для работы с гоблиннами
+goblins = []
+initial_x = 1220
+initial_y = 455
+distance_between_goblins = 320
+level = 0
+enemies_per_level = 5
+
 class Goblins:
     def __init__(self, image, x, y, speed, damage, health):
         self.image = image
@@ -136,24 +146,24 @@ class Goblins:
         return self.y >= 720
 
 # меод для нахождения центра гоблина
-    def det_position(self):
+    def get_position(self):
         goblin_center_x=self.x+self.image.get_width()//2
-        goblin_center_y=self.y+self.image.get_hight()//2
+        goblin_center_y=self.y+self.image.get_height()//2
         return goblin_center_x, goblin_center_y
 
-#переменные для работы с гоблиннами
-goblins = []
-initial_x = 1220
-initial_y = 455
-distance_between_goblins = 320
-level = 0
-enemies_per_level = 5
+
+
+
+
 
 def generate_goblins(level):
 
     for i in range(enemies_per_level + (level - 1) * 5):
         goblin = Goblins(goblin_a, initial_x + i * distance_between_goblins, initial_y, 1, 10, 100)
         goblins.append(goblin)
+
+
+
 
 # Функция параметров текста для кнопок
 def draw_text(text, font, color, surface, x, y):
@@ -201,12 +211,15 @@ def draw_goblin():
     for goblin in goblins:
         goblin.draw(screen)
         goblin.move()
+
         if goblin.check_bounds():
             lives-=1
             goblins_to_remove.append(goblin)
     for goblin in goblins_to_remove:
         goblins.remove(goblin)
     draw_text(f"Жизни: {lives}", font, WHITE, screen, 20, 20)
+
+
 
 def draw_game_screen():
     global button_exit_game
@@ -226,19 +239,19 @@ grid_cellsy3 = [pygame.Rect(730,350+50*i,40,40)for i in range(5)]
 grid_cellsx3 = [pygame.Rect(230+50*i,480,40,40)for i in range(4)]
 def draw_grid():
     for cell in grid_cellsx1:
-        pygame.draw.rect(screen, WHITE, cell, 1)
+        pygame.draw.rect(screen, WHITE, cell, 2)
     for cell in grid_cellsy1:
-        pygame.draw.rect(screen, WHITE, cell, 1)
+        pygame.draw.rect(screen, WHITE, cell, 2)
     for cell in grid_cellsx2:
-        pygame.draw.rect(screen, WHITE, cell, 1)
+        pygame.draw.rect(screen, WHITE, cell, 2)
     for cell in grid_cellsy2:
-        pygame.draw.rect(screen, WHITE, cell, 1)
+        pygame.draw.rect(screen, WHITE, cell, 2)
     for cell in grid_cellsy3:
-        pygame.draw.rect(screen, WHITE, cell, 1)
+        pygame.draw.rect(screen, WHITE, cell, 2)
     for cell in grid_cellsx3:
-        pygame.draw.rect(screen, WHITE, cell, 1)
+        pygame.draw.rect(screen, WHITE, cell, 2)
 
-class Trureli:
+class Tureli:
     def __init__(self, price, image, damage, cell):
         self.price=price
         self.turel_image=image
@@ -252,6 +265,10 @@ class Trureli:
         turel_center_y = self.cell.y + self.cell.get_hight() // 2
         return turel_center_x,turel_center_y
 
+
+    def is_in_radius(self, turel_center_x, turel_center_y, goblin_center_x, goblin_center_y):
+        distance=((turel_center_x-goblin_center_x)**2+(turel_center_y-goblin_center_y)**2)**0,5
+        print(distance)
 
 def draw_selection_window():
     global window_x, window_y
@@ -271,7 +288,7 @@ def draw_selection_window():
 
 
 
-#turel1=Trureli(100,turel,20,(700,723,40,40))
+#turel1=Tureli(100,turel,20,(700,723,40,40))
 list_for_turel=[]
 #print(turel1.cell)
 running = True
@@ -308,29 +325,29 @@ while running:
                         # После выбора иконки, создаем объект турели и закрываем окно выбора
                         if selected_icon:
                             if selected_icon == "turel" and balance>=100:
-                                new_turel = Trureli(100, turel, 20, choos_cell)
+                                new_turel = Tureli(100, turel, 20, choos_cell)
                                 list_for_turel.append(new_turel)
                                 balance-=100
                             elif selected_icon == "luk" and balance>=100:
-                                new_turel = Trureli(100, luk, 15, choos_cell)
+                                new_turel = Tureli(100, luk, 15, choos_cell)
                                 list_for_turel.append(new_turel)
                                 balance -= 100
                             selected_icon = None
                             choos_cell = None
                             selection_window_open = False
                     else:
-                        for cell in grid_cellsx1 + grid_cellsy1 + grid_cellsx2 + grid_cellsy2 + grid_cellsx3 + grid_cellsy3:
+                        for cell in grid_cellsx1 + grid_cellsy1 + grid_cellsx2 + grid_cellsy2 + grid_cellsx3 + grid_cellsy3:#проходимся по всем ячейкам
                             if cell.collidepoint(event.pos):  # Если мышка была нажата внутри клетки
                                 selected_cell = cell  # Переменная, в которой сохраняется объект клетки
-                                cell_occupied = False
-                                for gun in list_for_turel:
-                                    if selected_cell == gun.cell:
-                                        cell_occupied = True
+                                cell_occupied = False#создаём переменнцю для проверки занята ли клетка или нет
+                                for gun in list_for_turel:#создаём цикл для проверки
+                                    if selected_cell == gun.cell:#если выбранная ячейка занята
+                                        cell_occupied = True#изменяем значение переменной после того как проверяем что клетка занята
                                         print('Клетка занята', selected_cell)
                                         break
-                                if not cell_occupied:
-                                    choos_cell = selected_cell
-                                    selection_window_open = True
+                                if not cell_occupied:#проверка изменилось ли значение переменной или нет
+                                    choos_cell = selected_cell#сохраним значение координат свободной ячейки
+                                    selection_window_open = True#зададим значение переменной для открытия окна с выбором турели
                                     print('Клетка выбрана для размещения турели', selected_cell)
                                 else:
                                     choos_cell = None
@@ -354,6 +371,8 @@ while running:
         coin = draw_text('Баланс: '+ str(balance), font, WHITE, screen, 1000, 20)
         draw_goblin()
         draw_grid()
+
+
         # Отрисовка турелей на игровом поле
         for turel_obj in list_for_turel:
             turel_obj.draw_turel(screen)
