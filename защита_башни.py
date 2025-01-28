@@ -230,6 +230,16 @@ def draw_game_screen():
     pygame.display.set_caption("Игровой экран")
 
 
+def goblin_position():
+    for temp in goblins:
+        goblin_center_x, goblin_center_y = goblin.get_position()
+
+
+
+
+
+
+
 #ЯЧЕЙКИ
 grid_cellsx1 = [pygame.Rect(360+50*i,50,40,40)for i in range(13)]
 grid_cellsy1 = [pygame.Rect(200,120+50*i,40,40)for i in range(5)]
@@ -262,13 +272,15 @@ class Tureli:
         surface.blit(self.turel_image,(self.cell.x,self.cell.y))
     def vustrel(self):
         turel_center_x = self.cell.x + self.cell.get_width() // 2
-        turel_center_y = self.cell.y + self.cell.get_hight() // 2
+        turel_center_y = self.cell.y + self.cell.get_height() // 2
         return turel_center_x,turel_center_y
 
 
     def is_in_radius(self, turel_center_x, turel_center_y, goblin_center_x, goblin_center_y):
-        distance=((turel_center_x-goblin_center_x)**2+(turel_center_y-goblin_center_y)**2)**0,5
+        distance=((turel_center_x-goblin_center_x)**2+(turel_center_y-goblin_center_y)**2)**0.5
         print(distance)
+        return distance<=self.attack_radius#если верно возвращает True, иначе False
+
 
 def draw_selection_window():
     global window_x, window_y
@@ -294,7 +306,17 @@ list_for_turel=[]
 running = True
 running = True
 while running:
+
+
+
+
+
     for event in pygame.event.get():  # Проверка всех событий в игре
+
+
+
+
+
         if event.type == pygame.QUIT:  # Если действие - нажатие на кнопку закрытия окна
             pygame.quit()
             sys.exit()
@@ -315,6 +337,10 @@ while running:
                     level += 1
                     generate_goblins(level)  # Генерация новой волны
                 elif current_screen == 'game_screen':
+                    #for temp in list_for_turel:
+                        #if temp.is_in_radius()==True:
+
+                            #print(len(list_for_turel))
                     if selection_window_open and choos_cell:
                         if event.pos[0] >= window_x + 10 and event.pos[0] <= window_x + 50 and event.pos[1] >= window_y + 10 and event.pos[1] <= window_y + 50:
                             selected_icon = "turel"
@@ -358,6 +384,11 @@ while running:
                             choos_cell = None
                             selection_window_open = False
 
+
+
+
+
+
     if lives <= 0:  # Проверяем количество жизней ВНУТРИ ИГРОВОГО ЦИКЛА
         current_screen = "main_menu"
         goblins.clear()
@@ -371,11 +402,12 @@ while running:
         coin = draw_text('Баланс: '+ str(balance), font, WHITE, screen, 1000, 20)
         draw_goblin()
         draw_grid()
-
+        Goblins.get_position(self=)
 
         # Отрисовка турелей на игровом поле
         for turel_obj in list_for_turel:
             turel_obj.draw_turel(screen)
+
         # Если окно выбора турели открыто, рисуем его
         if selection_window_open and choos_cell:
             draw_selection_window()
