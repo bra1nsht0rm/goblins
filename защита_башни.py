@@ -231,8 +231,12 @@ def draw_game_screen():
 
 
 def goblin_position():
+    goblinN=0
+
     for temp in goblins:
-        goblin_center_x, goblin_center_y = goblin.get_position()
+        goblinN+=1
+        temp.get_position()
+        print(goblinN, temp.get_position())
 
 
 
@@ -402,7 +406,8 @@ while running:
         coin = draw_text('Баланс: '+ str(balance), font, WHITE, screen, 1000, 20)
         draw_goblin()
         draw_grid()
-        Goblins.get_position(self=)
+        goblin_position()
+
 
         # Отрисовка турелей на игровом поле
         for turel_obj in list_for_turel:
