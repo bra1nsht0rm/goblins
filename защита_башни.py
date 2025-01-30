@@ -286,6 +286,17 @@ class Tureli:
         return distance<=self.attack_radius#если верно возвращает True, иначе False
 
 
+
+    def attack_goblin(self, goblins):
+        turel_center_x,turel_center_y = self.vustrel()
+        for goblin in goblins:
+            goblin_center_x, goblin_center_y = goblin.get_position()
+            if self.is_in_radius(turel_center_x, turel_center_y, goblin_center_x, goblin_center_y):
+                if goblin.health<=0:
+                    goblins.remove(goblin)
+                break
+
+
 def draw_selection_window():
     global window_x, window_y
 
@@ -307,8 +318,12 @@ def draw_selection_window():
 #turel1=Tureli(100,turel,20,(700,723,40,40))
 list_for_turel=[]
 #print(turel1.cell)
+
+
+#def turell_attack():
+
 running = True
-running = True
+
 while running:
 
 
@@ -409,9 +424,14 @@ while running:
         goblin_position()
 
 
+
+
         # Отрисовка турелей на игровом поле
         for turel_obj in list_for_turel:
             turel_obj.draw_turel(screen)
+
+        for temp in list_for_turel:
+            temp.attack_goblin(goblins)
 
         # Если окно выбора турели открыто, рисуем его
         if selection_window_open and choos_cell:
