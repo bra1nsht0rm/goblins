@@ -160,7 +160,7 @@ def generate_goblins(level):
     goblinspeed=0.6
     for i in range(enemies_per_level + (level - 1) * 5):
 
-        goblin = Goblins(goblin_a, initial_x + i * distance_between_goblins, initial_y, goblinspeed, 100, 100)
+        goblin = Goblins(goblin_a, initial_x + i * distance_between_goblins, initial_y, goblinspeed, 100, 3000)
         goblins.append(goblin)
 
 
@@ -237,7 +237,7 @@ def goblin_position():
     for temp in goblins:
         goblinN+=1
         temp.get_position()
-        print(goblinN, temp.get_position())
+        #print(goblinN, temp.get_position())
 
 
 
@@ -272,7 +272,7 @@ class Tureli:
         self.turel_image=image
         self.damage=damage
         self.cell=cell
-        self.attack_radius=300
+        self.attack_radius=150
     def draw_turel(self,surface):
         surface.blit(self.turel_image,(self.cell.x,self.cell.y))
     def vustrel(self):
