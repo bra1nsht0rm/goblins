@@ -157,9 +157,10 @@ class Goblins:
 
 
 def generate_goblins(level):
-
+    goblinspeed=0.6
     for i in range(enemies_per_level + (level - 1) * 5):
-        goblin = Goblins(goblin_a, initial_x + i * distance_between_goblins, initial_y, 1, 10, 100)
+
+        goblin = Goblins(goblin_a, initial_x + i * distance_between_goblins, initial_y, goblinspeed, 100, 100)
         goblins.append(goblin)
 
 
@@ -271,12 +272,12 @@ class Tureli:
         self.turel_image=image
         self.damage=damage
         self.cell=cell
-        self.attack_radius=150
+        self.attack_radius=300
     def draw_turel(self,surface):
         surface.blit(self.turel_image,(self.cell.x,self.cell.y))
     def vustrel(self):
-        turel_center_x = self.cell.x + self.cell.get_width() // 2
-        turel_center_y = self.cell.y + self.cell.get_height() // 2
+        turel_center_x = self.cell.x + self.cell.width // 2
+        turel_center_y = self.cell.y + self.cell.height // 2
         return turel_center_x,turel_center_y
 
 
@@ -292,6 +293,8 @@ class Tureli:
         for goblin in goblins:
             goblin_center_x, goblin_center_y = goblin.get_position()
             if self.is_in_radius(turel_center_x, turel_center_y, goblin_center_x, goblin_center_y):
+                print(f'гоблин получил урон, осталось {goblin.health}')
+                goblin.health -=self.damage
                 if goblin.health<=0:
                     goblins.remove(goblin)
                 break
@@ -370,11 +373,11 @@ while running:
                         # После выбора иконки, создаем объект турели и закрываем окно выбора
                         if selected_icon:
                             if selected_icon == "turel" and balance>=100:
-                                new_turel = Tureli(100, turel, 20, choos_cell)
+                                new_turel = Tureli(100, turel, 100, choos_cell)
                                 list_for_turel.append(new_turel)
                                 balance-=100
                             elif selected_icon == "luk" and balance>=100:
-                                new_turel = Tureli(100, luk, 15, choos_cell)
+                                new_turel = Tureli(100, luk, 100, choos_cell)
                                 list_for_turel.append(new_turel)
                                 balance -= 100
                             selected_icon = None
