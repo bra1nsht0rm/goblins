@@ -1,6 +1,7 @@
 import pygame
 import sys
 pygame.init()#инициализировали библиотеку pygame
+from puli import Bullets
 #инициализация - это синхранизация программы и устройства(звук, яркость экрана, микрофон)
 
 # создание экрана
@@ -283,17 +284,23 @@ class Tureli:
 
     def is_in_radius(self, turel_center_x, turel_center_y, goblin_center_x, goblin_center_y):
         distance=((turel_center_x-goblin_center_x)**2+(turel_center_y-goblin_center_y)**2)**0.5
-        print(distance)
+        #print(distance)
         return distance<=self.attack_radius#если верно возвращает True, иначе False
 
 
 
     def attack_goblin(self, goblins):
+
         turel_center_x,turel_center_y = self.vustrel()
         for goblin in goblins:
             goblin_center_x, goblin_center_y = goblin.get_position()
             if self.is_in_radius(turel_center_x, turel_center_y, goblin_center_x, goblin_center_y):
-                print(f'гоблин получил урон, осталось {goblin.health}')
+                bullet=Bullets(1,turel_center_x, turel_center_y, goblin)
+                list_for_bullet.append(bullet)
+                print(list_for_bullet)
+                pygame.draw.rect(screen, GREEN, (turel_center_x, turel_center_y, 40, 40))
+
+                #print(f'гоблин получил урон, осталось {goblin.health}')
                 goblin.health -=self.damage
                 if goblin.health<=0:
                     goblins.remove(goblin)
@@ -321,7 +328,7 @@ def draw_selection_window():
 #turel1=Tureli(100,turel,20,(700,723,40,40))
 list_for_turel=[]
 #print(turel1.cell)
-
+list_for_bullet = []
 
 #def turell_attack():
 
@@ -432,6 +439,9 @@ while running:
         # Отрисовка турелей на игровом поле
         for turel_obj in list_for_turel:
             turel_obj.draw_turel(screen)
+
+        for bullet_obj in list_for_bullet:
+            bullet_obj.
 
         for temp in list_for_turel:
             temp.attack_goblin(goblins)
