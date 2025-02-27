@@ -3,7 +3,7 @@ import sys
 pygame.init()#инициализировали библиотеку pygame
 from puli import Bullets
 #инициализация - это синхранизация программы и устройства(звук, яркость экрана, микрофон)
-
+import random
 # создание экрана
 screen_width = 1280
 screen_height = 720
@@ -179,7 +179,7 @@ def draw_text(text, font, color, surface, x, y):
 # Функция для создания кнопок
 def create_button(x, y, width, height, color, text):
     button = pygame.Rect(x, y, width, height)  # местоположение и размеры кнопки
-    pygame.draw.rect(screen, color, button)  # цвет для прямоугольника
+    pygame.draw.rect(screen, color, button)  # отрисовка прямоугольника
     draw_text(text, font, WHITE, screen, x + 10, y + 10)  # параметры для текста
     return button
 
@@ -290,15 +290,15 @@ class Tureli:
 
 
     def attack_goblin(self, goblins):
-
+        random_x=random.randint(1,1280)
+        random_y=random.randint(1,720)
         turel_center_x,turel_center_y = self.vustrel()
         for goblin in goblins:
             goblin_center_x, goblin_center_y = goblin.get_position()
             if self.is_in_radius(turel_center_x, turel_center_y, goblin_center_x, goblin_center_y):
-                bullet=Bullets(1,turel_center_x, turel_center_y, goblin)
+                bullet=Bullets(1,turel_center_x, turel_center_y, goblin, 40, 20)
                 list_for_bullet.append(bullet)
                 print(list_for_bullet)
-                pygame.draw.rect(screen, GREEN, (turel_center_x, turel_center_y, 40, 40))
 
                 #print(f'гоблин получил урон, осталось {goblin.health}')
                 goblin.health -=self.damage
@@ -440,11 +440,14 @@ while running:
         for turel_obj in list_for_turel:
             turel_obj.draw_turel(screen)
 
-        for bullet_obj in list_for_bullet:
-            bullet_obj.
+        #for bullet_obj in list_for_bullet:
+            #bullet_obj.
 
         for temp in list_for_turel:
             temp.attack_goblin(goblins)
+
+        for pulya in list_for_bullet:
+            pygame.draw.rect(screen,WHITE,pulya)
 
         # Если окно выбора турели открыто, рисуем его
         if selection_window_open and choos_cell:

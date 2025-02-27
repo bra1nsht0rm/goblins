@@ -1,9 +1,13 @@
+import pygame
 class Bullets:
-    def __init__(self, speed, start_x, start_y, enemy):
+    def __init__(self, speed, start_x, start_y, enemy, width,height):
         self.speed=speed
         self.start_x=start_x
         self.start_y=start_y
         self.enemy=enemy
+        self.width=width
+        self.height=height
+        self.rect=pygame.Rect(self.start_x, self.start_y, self.width, self.height)
         #self.image=image
 
     def shot(self,enemy):
@@ -14,4 +18,4 @@ class Bullets:
 
         print('good')
 
-    def draw_bullet(self, surface):
+
