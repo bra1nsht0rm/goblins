@@ -297,7 +297,9 @@ class Tureli:
             goblin_center_x, goblin_center_y = goblin.get_position()
             if self.is_in_radius(turel_center_x, turel_center_y, goblin_center_x, goblin_center_y):
                 bullet=Bullets(1,turel_center_x, turel_center_y, goblin, 40, 20)
+                bullet.shot(goblin)
                 list_for_bullet.append(bullet)
+
                 print(list_for_bullet)
 
                 #print(f'гоблин получил урон, осталось {goblin.health}')
