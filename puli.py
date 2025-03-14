@@ -48,20 +48,19 @@ class Bullets:
 
 
     def calculate_direction(self):
-        def calculate_direction(self):
-            if self.enemy:
-                goblin_x, goblin_y = self.enemy.get_position()
-                dx = goblin_x - self.x  # расстояние от пули до гоблина по x
-                dy = goblin_y - self.y  # расстояние от пули до гоблина по y
-                bullet_distance = math.sqrt(dx**2 + dy**2)  # вычисляем расстояние от пули до гоблина
+        if self.enemy:
+            goblin_x, goblin_y = self.enemy.get_position()
+            dx = goblin_x - self.x  # расстояние от пули до гоблина по x
+            dy = goblin_y - self.y  # расстояние от пули до гоблина по y
+            bullet_distance = math.sqrt(dx**2 + dy**2)  # вычисляем расстояние от пули до гоблина
 
-                # Нормализуем вектор направления (создаем единичный вектор)
-                if bullet_distance > 0:
-                    direction_x = dx / bullet_distance
-                    direction_y = dy / bullet_distance
-                    return direction_x, direction_y
+            # Нормализуем вектор направления (создаем единичный вектор)
+            if bullet_distance > 0:
+                direction_x = dx / bullet_distance
+                direction_y = dy / bullet_distance
+                return direction_x, direction_y
 
-                return 0, 0  # если расстояние равно 0, возвращаем нулевой вектор
+            return 0, 0  # если расстояние равно 0, возвращаем нулевой вектор
 
 
 

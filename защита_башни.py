@@ -296,7 +296,7 @@ class Tureli:
         for goblin in goblins:
             goblin_center_x, goblin_center_y = goblin.get_position()
             if self.is_in_radius(turel_center_x, turel_center_y, goblin_center_x, goblin_center_y):
-                bullet=Bullets(1,turel_center_x, turel_center_y, goblin, 40, 20)
+                bullet=Bullets(1,turel_center_x, turel_center_y, goblin, 10, 10)
 
                 list_for_bullet.append(bullet)
 
@@ -310,13 +310,15 @@ class Tureli:
                 break
 
 
-def update_bullets(list_for_bullets):
+def update_bullets():
+    global list_for_bullet
     active_bullets=[]
-    for temp in list_for_bullets:
-        if temp.update:
+    for temp in list_for_bullet:
+        if temp.update():
             active_bullets.append(temp)
 
-    list_for_bullets=active_bullets
+    list_for_bullet=active_bullets
+
 
 
 def draw_selection_window():
