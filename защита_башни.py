@@ -310,6 +310,15 @@ class Tureli:
                 break
 
 
+def update_bullets(list_for_bullets):
+    active_bullets=[]
+    for temp in list_for_bullets:
+        if temp.update:
+            active_bullets.append(temp)
+
+    list_for_bullets=active_bullets
+
+
 def draw_selection_window():
     global window_x, window_y
 

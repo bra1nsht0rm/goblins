@@ -17,39 +17,30 @@ class Bullets:
         else:
             print("Внимание: пуля создана без цели!")
 
-
-    def update(self,enemy):
-        #шаг 1 проверяем наличие цели и активна ли пуля
+    def update(self, enemy=None):
+        # шаг 1: проверяем наличие цели и активна ли пуля
         if not self.active or not self.enemy:
-            print('пуля не активна')
             return False
-        else:
-            # шаг 2 определяем в какую сторону летит пуля
-            goblin_x, goblin_y = self.enemy.get_position()
-            # шаг 3 определяем в какуюсторону движется пуля
-            if goblin_x>self.x:
-                self.x+=5
 
-            elif goblin_x<self.x:
-                self.x-=5
+        # шаг 2: вычисляем направление движения пули
+        direction_x, direction_y = self.calculate_direction()
 
-            if goblin_y>self.y:
-                self.y+=5
+        # шаг 3: перемещаем пулю в направлении цели с учетом скорости
+        self.x += direction_x * self.speed
+        self.y += direction_y * self.speed
 
-            elif goblin_y<self.y:
-                self.y-=5
+        # шаг 4: обновляем позицию пули
+        self.rect.x = self.x
+        self.rect.y = self.y
 
-            #шаг 4 обновляем позициию пули
-            self.rect.x = self.x
-            self.rect.y = self.y
+        # шаг 5: проверяем столкновение с врагом
+        if self.rect.colliderect(self.enemy.rect):
+            self.active = False
+            self.enemy.health -= 10
+            print(f"Попадание! Осталось здоровья у гоблина: {self.enemy.health}")
+            return False
 
-            # шаг 5 проверяем столкновение с врагом
-            if self.rect.colliderect(self.enemy.rect):
-                self.active = False
-                self.enemy.health-=10
-                return False
-
-            return True
+        return True
 
 
 
@@ -57,13 +48,20 @@ class Bullets:
 
 
     def calculate_direction(self):
-        if self.enemy:
-            goblin_x, goblin_y = self.enemy.get_position()
-            dx = goblin_x - self.x  # расстояние от пули до гоблина по x
-            dy = goblin_y - self.y  # расстояние от пули до гоблина по y
-            bullet_distance = math.sqrt(dx ** 2 + dy ** 2)  # вычесляем радиус - гоблина до пули
-            if bullet_distance>0:
-                pass
+        def calculate_direction(self):
+            if self.enemy:
+                goblin_x, goblin_y = self.enemy.get_position()
+                dx = goblin_x - self.x  # расстояние от пули до гоблина по x
+                dy = goblin_y - self.y  # расстояние от пули до гоблина по y
+                bullet_distance = math.sqrt(dx**2 + dy**2)  # вычисляем расстояние от пули до гоблина
+
+                # Нормализуем вектор направления (создаем единичный вектор)
+                if bullet_distance > 0:
+                    direction_x = dx / bullet_distance
+                    direction_y = dy / bullet_distance
+                    return direction_x, direction_y
+
+                return 0, 0  # если расстояние равно 0, возвращаем нулевой вектор
 
 
 
