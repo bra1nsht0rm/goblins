@@ -43,6 +43,8 @@ distance_between_goblins = 320
 level = 0
 enemies_per_level = 5
 
+
+time_vistrel = 0
 class Goblins:
     def __init__(self, image, x, y, speed, damage, health):
         self.image = image
@@ -52,6 +54,7 @@ class Goblins:
         self.damage = damage
         self.health = health
         self.direction='left'
+        self.rect=pygame.Rect(self.x, self.y, self.image.get_width(), self.image.get_height())
 
     def draw(self, surface):
         surface.blit(self.image, (self.x, self.y))
@@ -161,7 +164,7 @@ def generate_goblins(level):
     goblinspeed=0.6
     for i in range(enemies_per_level + (level - 1) * 5):
 
-        goblin = Goblins(goblin_a, initial_x + i * distance_between_goblins, initial_y, goblinspeed, 100, 100000)
+        goblin = Goblins(goblin_a, initial_x + i * distance_between_goblins, initial_y, goblinspeed, 100, 30)
         goblins.append(goblin)
 
 
@@ -274,6 +277,8 @@ class Tureli:
         self.damage=damage
         self.cell=cell
         self.attack_radius=100
+        self.timeout = 120#время задержки перед следующим выстрелом
+        self.can_shoot = True#переменная для проверки возможности выстрела
     def draw_turel(self,surface):
         surface.blit(self.turel_image,(self.cell.x,self.cell.y))
     def vustrel(self):
@@ -290,8 +295,16 @@ class Tureli:
 
 
     def attack_goblin(self, goblins):
-        random_x=random.randint(1,1280)
-        random_y=random.randint(1,720)
+        global time_vistrel
+
+        if not self.can_shoot:#проверка возможности выстрела
+            time_vistrel+=1#прибавляем еденицу каждую итерацию цикла(60-1 секунда)
+
+            if time_vistrel>=self.timeout:# перезарядка 120, проверяем прошло ли это время
+                time_vistrel=0#если время прошло, обновляем переменную с подсчётом времени
+                self.can_shoot=True
+            return#метод заканчивает работу при выполнении условия
+
         turel_center_x,turel_center_y = self.vustrel()
         for goblin in goblins:
             goblin_center_x, goblin_center_y = goblin.get_position()
@@ -299,15 +312,15 @@ class Tureli:
                 bullet=Bullets(1,turel_center_x, turel_center_y, goblin, 10, 10)
 
                 list_for_bullet.append(bullet)
-
-
                 print(list_for_bullet)
 
-                #print(f'гоблин получил урон, осталось {goblin.health}')
-
-                if goblin.health<=0:
+                    #print(f'гоблин получил урон, осталось {goblin.health}')
+                self.can_shoot=False
+                if goblin.health <= 0:
                     goblins.remove(goblin)
                 break
+
+
 
 
 def update_bullets():
@@ -347,8 +360,11 @@ list_for_bullet = []
 #def turell_attack():
 
 running = True
+testp=0
 
+clock=pygame.time.Clock()#создали объект для управления фпс
 while running:
+    clock.tick(60)#ограничили фпс до 60
 
 
 
@@ -460,13 +476,17 @@ while running:
         for temp in list_for_turel:
             temp.attack_goblin(goblins)
 
+        update_bullets()
         for pulya in list_for_bullet:
-            pygame.draw.rect(screen,WHITE,pulya)
+            print(pulya.rect," пуля")
+            pygame.draw.rect(screen,WHITE,pulya.rect)
 
         # Если окно выбора турели открыто, рисуем его
         if selection_window_open and choos_cell:
             draw_selection_window()
             # Подсвечиваем выбранную клетку
             pygame.draw.rect(screen, GREEN, choos_cell, 2)
+
+
 
     pygame.display.update()  # обновление экрана
