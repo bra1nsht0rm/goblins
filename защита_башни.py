@@ -326,9 +326,9 @@ class Tureli:
 def update_bullets():
     global list_for_bullet
     active_bullets=[]
-    for temp in list_for_bullet:
-        if temp.update():
-            active_bullets.append(temp)
+    for bullet in list_for_bullet:
+        if bullet.update():
+            active_bullets.append(bullet)
 
     list_for_bullet=active_bullets
 
@@ -480,6 +480,10 @@ while running:
         for pulya in list_for_bullet:
             print(pulya.rect," пуля")
             pygame.draw.rect(screen,WHITE,pulya.rect)
+            if not pulya.active:
+                print(list_for_bullet.index(pulya))
+
+
 
         # Если окно выбора турели открыто, рисуем его
         if selection_window_open and choos_cell:
