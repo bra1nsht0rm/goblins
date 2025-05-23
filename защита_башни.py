@@ -24,7 +24,9 @@ selected_cell = None
 window_x=0
 window_y=0
 balance=1000
+Xbalance=0.6
 selection_window_open=False#переменная для проверки открыто окно с выбором или нет
+logicForUpWindow=None
 # Цвета
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
@@ -42,7 +44,6 @@ initial_y = 455
 distance_between_goblins = 320
 level = 0
 enemies_per_level = 5
-
 
 time_vistrel = 0
 class Goblins:
@@ -161,7 +162,9 @@ class Goblins:
 
 
 def generate_goblins(level):
+    global Xbalance
     goblinspeed=0.6
+    Xbalance*=1.5
     for i in range(enemies_per_level + (level - 1) * 5):
 
         goblin = Goblins(goblin_a, initial_x + i * distance_between_goblins, initial_y, goblinspeed, 100, 30)
@@ -295,7 +298,7 @@ class Tureli:
 
 
     def attack_goblin(self, goblins):
-        global time_vistrel
+        global time_vistrel,balance
 
         if not self.can_shoot:#проверка возможности выстрела
             time_vistrel+=1#прибавляем еденицу каждую итерацию цикла(60-1 секунда)
@@ -312,25 +315,39 @@ class Tureli:
                 bullet=Bullets(1,turel_center_x, turel_center_y, goblin, 10, 10)
 
                 list_for_bullet.append(bullet)
-                print(list_for_bullet)
+
 
                     #print(f'гоблин получил урон, осталось {goblin.health}')
                 self.can_shoot=False
                 if goblin.health <= 0:
                     goblins.remove(goblin)
+                    balance+=25*Xbalance
                 break
 
+    def draw_levelup_window(self, cell):
+        global window_x, window_y
+        print(cell)
+        window_width = 40
+        window_hight = 40
+        window_x = cell[0]+50
+        window_y = cell[1]
+        pygame.draw.rect(screen, WHITE, (window_x, window_y, window_width, window_hight))
 
 
 
 def update_bullets():
     global list_for_bullet
+    #print(f"До обновления: {len(list_for_bullet)} пуль")
     active_bullets=[]
     for bullet in list_for_bullet:
         if bullet.update():
             active_bullets.append(bullet)
+        else:
+            print("Пуля удалена из списка!")
 
     list_for_bullet=active_bullets
+    #print(f"После обновления: {len(list_for_bullet)} пуль")
+
 
 
 
@@ -427,6 +444,8 @@ while running:
                                 cell_occupied = False#создаём переменнцю для проверки занята ли клетка или нет
                                 for gun in list_for_turel:#создаём цикл для проверки
                                     if selected_cell == gun.cell:#если выбранная ячейка занята
+                                        logicForUpWindow=True
+                                        print(gun.cell)
                                         cell_occupied = True#изменяем значение переменной после того как проверяем что клетка занята
                                         print('Клетка занята', selected_cell)
                                         break
@@ -478,7 +497,6 @@ while running:
 
         update_bullets()
         for pulya in list_for_bullet:
-            print(pulya.rect," пуля")
             pygame.draw.rect(screen,WHITE,pulya.rect)
             if not pulya.active:
                 print(list_for_bullet.index(pulya))
@@ -490,7 +508,8 @@ while running:
             draw_selection_window()
             # Подсвечиваем выбранную клетку
             pygame.draw.rect(screen, GREEN, choos_cell, 2)
-
+        if logicForUpWindow:
+            gun.draw_levelup_window(gun.cell)
 
 
     pygame.display.update()  # обновление экрана

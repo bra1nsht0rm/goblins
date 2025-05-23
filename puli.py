@@ -33,6 +33,11 @@ class Bullets:
         self.rect.x = self.x
         self.rect.y = self.y
 
+        # Отладочная информация
+        goblin_x, goblin_y = self.enemy.get_position()
+        print(f"Пуля: {self.rect}, Гоблин: {self.enemy.rect}")
+        print(f"Расстояние: X={abs(self.x - goblin_x)}, Y={abs(self.y - goblin_y)}")
+
         # шаг 5: проверяем столкновение с врагом
         if self.rect.colliderect(self.enemy.rect):
             self.active = False
@@ -40,8 +45,15 @@ class Bullets:
             print(f"Попадание! Осталось здоровья у гоблина: {self.enemy.health}")
             return False
 
-        return True
+        # Альтернативная проверка столкновения - проверяем расстояние вручную
+        distance = ((self.x - goblin_x)**2 + (self.y - goblin_y)**2) ** 0.5
+        if distance < 30:  # если расстояние меньше 30 пикселей, считаем это попаданием
+            self.active = False
+            self.enemy.health -= 10
+            print(f"Попадание (по расстоянию)! Осталось здоровья у гоблина: {self.enemy.health}")
+            return False
 
+        return True
 
 
 
