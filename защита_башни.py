@@ -23,10 +23,13 @@ choos_cell=None
 selected_cell = None
 window_x=0
 window_y=0
+window_x_level=0
+window_y_level=0
 balance=1000
 Xbalance=0.6
 selection_window_open=False#переменная для проверки открыто окно с выбором или нет
 logicForUpWindow=None
+logicForCloseUpWindow=None
 # Цвета
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
@@ -198,7 +201,7 @@ button_exit = None
 button_start = None
 button_exit_game = None
 button_next_level = None
-
+closebatton=None
 
 
 
@@ -350,6 +353,18 @@ def update_bullets():
 
 
 
+def draw_levelup_window():
+    global window_x_level, window_y_level, logicForCloseUpWindow,closebatton
+    logicForCloseUpWindow=True
+    window_width = 60
+    window_hight = 60
+    window_x_level = cell[0]+70
+    window_y_level = cell[1]
+    pygame.draw.rect(screen, WHITE, (window_x_level, window_y_level, window_width, window_hight))
+    pygame.draw.rect(screen,RED,(window_x_level+10,window_y_level+40,20,10))
+    closebatton=pygame.draw.rect(screen,RED,(window_x_level+10,window_y_level+40,20,10))
+    if logicForCloseUpWindow==False:
+        return
 
 def draw_selection_window():
     global window_x, window_y
@@ -413,10 +428,10 @@ while running:
                     level += 1
                     generate_goblins(level)  # Генерация новой волны
                 elif current_screen == 'game_screen':
-                    #for temp in list_for_turel:
-                        #if temp.is_in_radius()==True:
+                    if logicForCloseUpWindow:
+                        if closebatton.collidepoint(event.pos):
+                            logicForCloseUpWindow==False
 
-                            #print(len(list_for_turel))
                     if selection_window_open and choos_cell:
                         if event.pos[0] >= window_x + 10 and event.pos[0] <= window_x + 50 and event.pos[1] >= window_y + 10 and event.pos[1] <= window_y + 50:
                             selected_icon = "turel"
@@ -509,7 +524,8 @@ while running:
             # Подсвечиваем выбранную клетку
             pygame.draw.rect(screen, GREEN, choos_cell, 2)
         if logicForUpWindow:
-            gun.draw_levelup_window(gun.cell)
+            draw_levelup_window()
+            print(logicForCloseUpWindow)
 
 
     pygame.display.update()  # обновление экрана
